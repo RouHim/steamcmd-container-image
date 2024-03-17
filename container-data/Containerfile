@@ -1,0 +1,54 @@
+FROM ubuntu:devel
+
+# Define environment variables
+ENV USER "ubuntu"
+ENV GROUP "ubuntu"
+ENV USER_HOME "/home/$USER"
+ENV STEAMCMD "$USER_HOME/steamcmd/steamcmd.sh"
+ENV SERVER_DIR "/data"
+ENV SERVER_CONFIG_DIR "/config"
+ENV STEAM_APP_ID ""
+ENV STARTUP_COMMAND ""
+
+WORKDIR $USER_HOME
+
+# Upgrade system and install basic tools
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y wget
+
+# Install steamcmd and its dependencies
+RUN apt install -y lib32gcc-s1 && \
+    mkdir -p $USER_HOME/steamcmd && \
+    wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf - -C $USER_HOME/steamcmd && \
+    chown -R $USER:$GROUP $USER_HOME/steamcmd
+
+# Cleanup, remove wget
+RUN apt purge -y wget && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create game server and config directory
+RUN mkdir -p $SERVER_DIR $SERVER_CONFIG_DIR
+VOLUME $SERVER_DIR
+VOLUME $SERVER_CONFIG_DIR
+
+# Copy steam-game.script to container
+COPY steam-game.script $USER_HOME/steam-game.script
+
+# Change user to non-root user
+RUN chown -R $USER:$GROUP $USER_HOME && \
+    chown -R $USER:$GROUP $SERVER_DIR $SERVER_CONFIG_DIR && \
+    chmod 777 -R $SERVER_DIR $SERVER_CONFIG_DIR
+USER $USER
+
+# Game port
+EXPOSE 8766/udp
+# Query port
+EXPOSE 27016/udp
+# Blobsync port
+EXPOSE 9700/udp
+
+# Define entrypoint
+COPY --chown=$USER:$GROUP --chmod=755 entrypoint.sh /sons-of-the-forest-server.sh
+ENTRYPOINT ["/sons-of-the-forest-server.sh"]
