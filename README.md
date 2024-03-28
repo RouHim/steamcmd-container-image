@@ -1,7 +1,7 @@
 # steamcmd-container-image
 
 This base container image provides everything you need to run a linux based dedicated server which is to be installed
-via SteamCMD. It's based on the latest packages provided by `ubuntu:devel`.
+via SteamCMD. It's based on the latest packages provided by `ubuntu:devel` and is built weekly.
 
 ![Docker Image Version](https://img.shields.io/docker/v/_/ubuntu?label=ubuntu)
 
@@ -23,7 +23,7 @@ ENV STARTUP_COMMAND "server -configpath "$SERVER_CONFIG_DIR""
 # Optional pre.sh script to run before the server starts
 COPY pre.sh $USER_HOME/pre.sh
 
-# Optional post.sh script to run after the server starts
+# Optional post.sh script to run after the server stops
 COPY post.sh $USER_HOME/post.sh
 ```
 
