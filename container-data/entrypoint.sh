@@ -52,7 +52,7 @@ if [ "$FAST_BOOT" == "true" ]; then
   echo "🔄 Starting server (fast)..."
   $STEAMCMD +runscript "$USER_HOME/steam-game-fast.script"
 else
-  echo "🔄 Updating / Installing / Validating server..."
+  echo "🔄 Installing / Updating /  Validating server..."
   $STEAMCMD +runscript "$USER_HOME/steam-game.script"
 fi
 
