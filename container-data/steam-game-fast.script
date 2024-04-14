@@ -1,0 +1,9 @@
+// Installs, updates and validates the server
+//
+@ShutdownOnFailedCommand 1
+@NoPromptForPassword 1
+@sSteamCmdForcePlatformType linux
+force_install_dir /data
+login anonymous
+%STEAM_APP_ID%
+quit

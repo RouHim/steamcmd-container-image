@@ -33,8 +33,9 @@ RUN mkdir -p $SERVER_DIR $SERVER_CONFIG_DIR
 VOLUME $SERVER_DIR
 VOLUME $SERVER_CONFIG_DIR
 
-# Copy steam-game.script to container
+# Copy steam game scripts to container
 COPY steam-game.script $USER_HOME/steam-game.script
+COPY steam-game-fast.script $USER_HOME/steam-game-fast.script
 
 # Change user to non-root user
 RUN chown -R $USER:$GROUP $USER_HOME && \
