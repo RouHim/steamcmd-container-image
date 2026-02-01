@@ -4,6 +4,6 @@
 @NoPromptForPassword 1
 @sSteamCmdForcePlatformType linux
 force_install_dir /data
-login anonymous
+%LOGIN_COMMAND%
 app_update %STEAM_APP_ID% validate
 quit
