@@ -63,3 +63,4 @@ Notes:
 - Steam Guard codes expire quickly (typically ~30 seconds). If the container is restarted, you may need to provide a new code.
 - SteamCMD stores login state under `~/.steam/`. If you mount a persistent volume for `$USER_HOME/.steam/`, restarts may not require Steam Guard again.
 - Credentials passed via environment variables can be visible via `docker inspect` and similar tooling. Prefer Docker/Kubernetes secrets for production, and avoid baking credentials into images.
+- SteamCMD script parsing is whitespace-based; usernames/passwords containing spaces may not work reliably.
