@@ -1,0 +1,4 @@
+# Ignore AVD-DS-0031: ENV STEAM_PASSWORD is an empty placeholder for runtime injection.
+# The actual password is passed at container runtime via `docker run -e STEAM_PASSWORD=...`
+# or via Docker Compose / Kubernetes secrets. No secret is baked into the image.
+AVD-DS-0031
