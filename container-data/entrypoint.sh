@@ -42,9 +42,31 @@ if [ -z "$STEAM_APP_ID" ]; then
     exit 1
 fi
 
+# Build login command based on credentials
+if [ -z "$STEAM_USERNAME" ]; then
+    LOGIN_COMMAND="login anonymous"
+    echo "🔐 Using anonymous login..."
+elif [ -z "$STEAM_PASSWORD" ]; then
+    echo "❌ Error: Username is set but password is empty!"
+    exit 1
+elif [ -n "$STEAM_GUARD_CODE" ]; then
+    LOGIN_COMMAND="login $STEAM_USERNAME $STEAM_PASSWORD $STEAM_GUARD_CODE"
+    echo "🔐 Using authenticated login for user: $STEAM_USERNAME..."
+else
+    LOGIN_COMMAND="login $STEAM_USERNAME $STEAM_PASSWORD"
+    echo "🔐 Using authenticated login for user: $STEAM_USERNAME..."
+fi
+
+export LOGIN_COMMAND
+
 # Replace %STEAM_APP_ID% in steam game scripts
 sed -i "s/%STEAM_APP_ID%/$STEAM_APP_ID/g" "$USER_HOME"/steam-game.script
 sed -i "s/%STEAM_APP_ID%/$STEAM_APP_ID/g" "$USER_HOME"/steam-game-fast.script
+
+# Replace %LOGIN_COMMAND% in steam game scripts using awk.
+# Placeholder is on its own line, so avoid gsub replacement semantics (e.g. '&' expansion).
+awk '$0 == "%LOGIN_COMMAND%" { print ENVIRON["LOGIN_COMMAND"]; next } { print }' "$USER_HOME/steam-game.script" > "$USER_HOME/steam-game.script.tmp" && mv "$USER_HOME/steam-game.script.tmp" "$USER_HOME/steam-game.script"
+awk '$0 == "%LOGIN_COMMAND%" { print ENVIRON["LOGIN_COMMAND"]; next } { print }' "$USER_HOME/steam-game-fast.script" > "$USER_HOME/steam-game-fast.script.tmp" && mv "$USER_HOME/steam-game-fast.script.tmp" "$USER_HOME/steam-game-fast.script"
 
 # Install / Update / Validate server
 # If FAST_BOOT == true use steam-game-fast.script otherwise use steam-game.script
