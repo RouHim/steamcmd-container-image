@@ -43,4 +43,23 @@ The following environment variables are available in the base image:
 | `STEAMCMD`          | `$USER_HOME/steamcmd/steamcmd.sh` | The path to the steamcmd executable                                               |
 | `SERVER_DIR`        | `/data`                           | The directory where the server files are stored                                   |
 | `SERVER_CONFIG_DIR` | `/config`                         | The directory where the server configuration files are stored                     |
+| `STEAM_USERNAME`     | ``                                | Steam account username (empty = use anonymous login)                              |
+| `STEAM_PASSWORD`     | ``                                | Steam account password (required if `STEAM_USERNAME` is set)                      |
+| `STEAM_GUARD_CODE`   | ``                                | Steam Guard 2FA code (optional; if set, passed to SteamCMD login)                 |
 | `FAST_BOOT`         | `false`                           | If set to `true`, the server will not be installed / updated / validated on start |
+
+## Authentication
+
+By default this image uses `login anonymous` when running SteamCMD.
+
+Some dedicated servers (or private/beta branches) require an authenticated Steam account to download. In that case set:
+
+- `STEAM_USERNAME`
+- `STEAM_PASSWORD`
+
+If Steam Guard (2FA) is enabled for the account, set `STEAM_GUARD_CODE` at container start.
+
+Notes:
+- Steam Guard codes expire quickly (typically ~30 seconds). If the container is restarted, you may need to provide a new code.
+- SteamCMD stores login state under `~/.steam/`. If you mount a persistent volume for `$USER_HOME/.steam/`, restarts may not require Steam Guard again.
+- Credentials passed via environment variables can be visible via `docker inspect` and similar tooling. Prefer Docker/Kubernetes secrets for production, and avoid baking credentials into images.
