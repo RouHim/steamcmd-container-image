@@ -2,3 +2,12 @@
 # The actual password is passed at container runtime via `docker run -e STEAM_PASSWORD=...`
 # or via Docker Compose / Kubernetes secrets. No secret is baked into the image.
 AVD-DS-0031
+
+# Go stdlib CVEs in /usr/bin/pebble (Go 1.26.7), shipped by the ubuntu:devel
+# base image since ~Sept 2026. Pebble is unused by steamcmd, is not owned by
+# any deb package, and can therefore not be fixed via apt upgrade.
+# Fixed upstream in Go 1.26.9 / 1.27.2 — drop these once the base image
+# ships a fixed Go toolchain. Added 2026-10-14.
+CVE-2026-78667
+CVE-2026-78669
+CVE-2026-97031
